@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My compiler</title>
+  <link rel="stylesheet" type="text/css" href="./libs/codemirror.css">
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <script src="scripts.js"></script>
+  <script src="./libs/codemirror.js"></script>
+</head>
+<body>
+
+  <div id="editor">
+    <div id="code"></div>
+    <div>
+    </div>
+  </div>
+  <div id="process">
+    <div>
+      <h2>Лексер</h2>
+      <div id="tokens-msg" class="message success"></div>
+      <div id="tokens"></div>
+    </div>
+    <div>
+      <h2>Парсер</h2>
+      <div id="pars-msg" class="message"></div>
+      <div id="pars"></div>
+    </div>
+  </div>
+  <div class="author">Yaroslav Tatarinov <br> PI 1-16-1</div>
+  <script type="text/javascript">
+    var $tokensMsg = document.getElementById('tokens-msg')
+    var $parsMsg = document.getElementById('pars-msg')
+
+    var $editor = CodeMirror(document.getElementById('code'), {
+      value: 'Prog Name\nBegin\n{ Комментарии }\nVar variable1 := 25 \nEnd',
+      lineNumbers: true
+    })
+    var $tokens = CodeMirror(document.getElementById('tokens'), {
+      lineNumbers: true,
+      readOnly: true
+    })
+    var $pars = CodeMirror(document.getElementById('pars'), {
+      lineNumbers: true,
+      readOnly: true
+    })
+    function coding(code) {
+      try {
+        var tokens = lexer(code)
+        $tokens.setValue(JSON.stringify(tokens, null, 2))
+        $tokensMsg.innerText = 'Разбиение на токены\n прошло успешно!'
+        $tokensMsg.className = 'message success'
+      } catch (e) {
+        $tokensMsg.innerText = e
+        $tokensMsg.className = 'message error'
+        $parsMsg.innerText = 'Ошибка в лексере'
+        $parsMsg.className = 'message error'
+        return
+      }
+
+      try {
+        var pars = parser(tokens)
+        $pars.setValue(JSON.stringify(pars, null, 2))
+        $parsMsg.innerText = 'Синтаксический анализ \n прошёл успешно!'
+        $parsMsg.className = 'message success'
+      } catch (e) {
+        $parsMsg.innerText = e
+        $parsMsg.className = 'message error'
+        return
+      }
+    }
+
+    $editor.on("update", function(e, cm) {
+      coding($editor.getValue())
+    })
+
+    coding($editor.getValue())
+  </script>
+</body>
+</html>
+
+
+
+
