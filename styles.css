@@ -63,11 +63,3 @@ body{
   padding:5px;
   color: #fff;
 }
-.author{
-  position: absolute;
-  font-size: 40px;
-  opacity: .4;
-  right: 0%;
-  top:0%;
-  z-index: 999;
-}
